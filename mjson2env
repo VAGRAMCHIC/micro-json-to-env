@@ -1,0 +1,36 @@
+#!/bin/bash
+
+
+rm -rf .mjson2env.tmp.json
+FILE=$@
+while read -r line
+do
+	echo "$line" >> .mjson2env.tmp.json
+done
+
+
+KEYS=$( cat .mjson2env.tmp.json | jq 'keys[]' | tr -d '"')
+VALS=$( cat .mjson2env.tmp.json | jq -r '.[]')
+
+rm -rf .mjson2env.tmp.json
+keyArr=($KEYS)
+valArr=($VALS)
+
+
+rm -rf $1
+
+for (( i=0; i < ${#keyArr[@]}; i++ )) 
+	do
+		out="${keyArr[$i]}=${valArr[$i]}"
+		echo $out >> $1
+		unset 'valArr[$i]'
+	done
+
+if (( ${#valArr[@]} <= 0  )); then
+	exit 0;
+else
+	for (( i=0; i <= ${#valArr[@]}; i++ ))
+	do
+		echo -n ${valArr[i]} >> $1
+	done
+fi

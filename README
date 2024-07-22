@@ -1,0 +1,3 @@
+USAGE:
+
+cat file.json | ./mjson2env outfile
